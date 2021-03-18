@@ -1,5 +1,6 @@
 #!/bin/bash
-
+#This script to gen_Key and copy pub key to server, run on client 
+#NOTICE: user was added to that server, authen with password
 
 genkey() {
 	ssh-keygen -q -N '' -m PEM -t rsa -f "$HOME/.ssh/id_rsa" <<< ""$'\n'"y" 2>&1 >/dev/null

@@ -1,4 +1,5 @@
 #!/bin/bash
+#RUN this script on Server to add user, add public_key of that user to SSH without password
 echo -n "Type username to add SSH: "
 read _userName
 
