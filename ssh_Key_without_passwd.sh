@@ -1,11 +1,14 @@
 #!/bin/bash
-#RUN this script on Server to add user, add public_key of that user to SSH without password
 echo -n "Type username to add SSH: "
 read _userName
+_check_user_exist=`cat /etc/passwd | grep $_userName`
 
-
-
-useradd $_userName -s /bin/bash -d /home/$_userName 
+if [[ $_check_user_exist != '' ]]; then
+	echo "User $_userName is exist!!!"
+else
+	useradd $_userName -s /bin/bash -d /home/$_userName
+	echo "Done add user $_userName!!!"
+fi	
 
 
 
