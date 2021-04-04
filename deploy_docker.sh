@@ -32,4 +32,6 @@ sudo yum install docker-ce docker-ce-cli containerd.io -y
 
 echo Done
 echo "#######################################"
-docker run hello-world 
+
+systemctl enable --now docker 
+docker run hello-world
