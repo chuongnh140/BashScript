@@ -30,7 +30,8 @@ echo "Config SELINUX..."
 sleep 5
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
 
-
+echo "Machine is restarting..."
+echo "Ctrl C and connect again after 30 second!!!"
 nmcli con up $_nameOfNetworkCard
 init 6
 
