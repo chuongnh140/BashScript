@@ -1,4 +1,4 @@
-#!/bin/#!/usr/bin/env bash
+#!/usr/bin/env bash
 
 echo -n "Enter hostname: "
 
@@ -6,12 +6,17 @@ read _hostname
 
 hostnamectl set-hostname $_hostname
 
+#install VIM
+echo "Install VIM Editor..."
+sleep 2
+yum install vim -y
+
 echo "##########################"
 _nameOfNetworkCard=`ip a | grep ens | sed -n '1p' | awk '{print $2}' | sed 's/://'`
 echo "Config IP Address with NMCLI"
 echo -n "Enter IP of this machine: "
 read _ip
-echo -n "Subnet: "
+echo -n "Subnet(/24,/23,...): "
 read _subnet
 echo -n "GateWay: "
 read _gateway
@@ -31,7 +36,7 @@ sleep 5
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
 
 echo "Machine is restarting..."
-echo "Ctrl C and connect again after 30 second!!!"
+echo "Close connection and connect again after 30 second!!!"
 nmcli con up $_nameOfNetworkCard
 init 6
 
