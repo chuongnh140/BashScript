@@ -10,7 +10,6 @@ END="\e[0m"
 
 echo -e "${BLUE}Script for config network in Ubuntu with NMCLI Tools${END}"
 
-_network_card_show=$(nmcli con show | awk '{print $4}' | grep -v DEVICE)
 
 function manualConfig() {
 echo -n "Enter IP of this machine: "
