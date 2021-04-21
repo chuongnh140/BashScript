@@ -43,7 +43,7 @@ echo -e "${BLUE}Download and Install NMCLI${END}"
 sudo apt-get update -y
 sudo apt install network-manager -y
 
-_network_card_show=$(nmcli con show | awk '{print $4}' | grep -v DEVICE)
+_network_card_show=$(nmcli d | awk '{print $1}' | grep -v DEVICE)
 
 echo -e "${BLUE}Check network_card...${END}"
 if [[ $_network_card_show == '' ]]; then
