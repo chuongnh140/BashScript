@@ -54,7 +54,7 @@ sudo apt install network-manager -y
 _deviceConnect=$(nmcli d | grep -v DEVICE |awk '$3 == "connected"{print $1}')
 _deviceDisConnect=$(nmcli d | grep -v DEVICE |awk '$3 == "disconnected"{print $1}')
 
-
+clear
 echo -e "${BLUE}Check network_card...${END}"
 echo "#############################################"
 echo -e "${YELLOW}Network card existing: ${END}"
