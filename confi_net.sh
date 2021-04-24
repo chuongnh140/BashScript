@@ -43,7 +43,7 @@ echo -e "${BLUE}Download and Install NMCLI${END}"
 sudo apt-get update -y
 sudo apt install network-manager -y
 
-_network_card_show=$(nmcli d | awk '{print $1}' | grep -v DEVICE)
+_network_card_show=$(nmcli d | awk '{print $4}' | grep -v CONNECTION)
 
 echo -e "${BLUE}Check network_card...${END}"
 if [[ $_network_card_show == '' ]]; then
@@ -55,10 +55,17 @@ else
   echo -e "${YELLOW}Network card existing: ${END}"
   echo -e "${GREEN}$_network_card_show${END}"
 fi
-
 echo "#############################################"
-echo -n -e "${BLUE}Type name of network_card want to modify: ${END}"
-read _cardName
+
+while [[ true ]]; do
+ echo -n -e "${BLUE}Type name of network_card want to modify: ${END}"
+ read _cardName
+ if [[ $_cardName != "" ]]; then
+   break
+ fi
+done
+
+
 
 while [[ true ]]; do
   echo -e "${BLUE}Config method Manual or DHCP ?${END}"
