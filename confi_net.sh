@@ -38,24 +38,36 @@ function showIP() {
   nmcli con show $1 | grep ipv4 --color
 }
 
+function addConNetwork() {
+  echo -e "${YELLOW}Only can add type Ethernet in this Script!!!${END}"
+  sleep 3
+  nmcli con add con-name $1 ifname $1 type ethernet
+}
+
+
+
 echo -e "${BLUE}Download and Install NMCLI${END}"
 
-sudo apt-get update -y
-sudo apt install network-manager -y
+#sudo apt-get update -y
+#sudo apt install network-manager -y
 
-_network_card_show=$(nmcli d | awk '{print $4}' | grep -v CONNECTION)
+_deviceConnect=$(nmcli d | grep -v DEVICE |awk '$3 == "connected"{print $1}')
+_deviceDisConnect=$(nmcli d | grep -v DEVICE |awk '$3 == "disconnected"{print $1}')
+
 
 echo -e "${BLUE}Check network_card...${END}"
-if [[ $_network_card_show == '' ]]; then
-  echo -e "${REDLI}Can't see any network_card${END}"
-  echo -e "${REDLI}Please check and run script again!!!${END}"
-  exit 1
-else
-  echo "#######################"
-  echo -e "${YELLOW}Network card existing: ${END}"
-  echo -e "${GREEN}$_network_card_show${END}"
-fi
 echo "#############################################"
+echo -e "${YELLOW}Network card existing: ${END}"
+echo -e "${GREEN}$_deviceConnect${END}"
+echo -e "${REDLI}$_deviceDisConnect${END}"
+echo -e """${YELLOW}Notice:
+  Green Color stand for network_Card can edit!!!
+  Red Color stand for can't edit, need to add connection to modify this device!!!
+${END}
+"""
+echo "#############################################"
+
+
 
 while [[ true ]]; do
  echo -n -e "${BLUE}Type name of network_card want to modify: ${END}"
@@ -65,7 +77,11 @@ while [[ true ]]; do
  fi
 done
 
-
+_checkStatus=$(nmcli d | grep $_cardName | awk '{print $3}')
+if [[ $_checkStatus == "disconnected" ]]; then
+  echo -e "${GREEN}Network Card need to be add Connection!!!${END}"
+  addConNetwork $_cardName
+fi
 
 while [[ true ]]; do
   echo -e "${BLUE}Config method Manual or DHCP ?${END}"
