@@ -6,6 +6,7 @@ GREEN="\e[32m"
 BLUE="\e[34m"
 REDLI="\e[91m"
 YELLOW="\e[33m"
+BLULI="\e[94m"
 END="\e[0m"
 
 echo -e "${BLUE}Script for config network in Ubuntu with NMCLI Tools${END}"
@@ -44,25 +45,34 @@ function addConNetwork() {
   nmcli con add con-name $1 ifname $1 type ethernet
 }
 
+function configNetworkFile() {
+  cat <<EOF > /etc/NetworkManager/conf.d/10-globally-managed-devices.conf
+[keyfile]
+unmanaged-devices=none
+EOF
+systemctl restart NetworkManager
+}
 
 
 echo -e "${BLUE}Download and Install NMCLI${END}"
 
-sudo apt-get update -y
-sudo apt install network-manager -y
+#sudo apt-get update -y
+#sudo apt install network-manager -y
 
 _deviceConnect=$(nmcli d | grep -v DEVICE |awk '$3 == "connected"{print $1}')
 _deviceDisConnect=$(nmcli d | grep -v DEVICE |awk '$3 == "disconnected"{print $1}')
-
+_deviceUnmanage=$(nmcli d | grep -v DEVICE |awk '$3 == "unmanaged"{print $1}')
 clear
 echo -e "${BLUE}Check network_card...${END}"
 echo "#############################################"
 echo -e "${YELLOW}Network card existing: ${END}"
 echo -e "${GREEN}$_deviceConnect${END}"
 echo -e "${REDLI}$_deviceDisConnect${END}"
+echo -e "${BLULI}$_deviceUnmanage${END}"
 echo -e """${YELLOW}Notice:
-  Green Color stand for network_Card can edit!!!
-  Red Color stand for can't edit, need to add connection to modify this device!!!
+  ${GREEN}Green Color${END} stand for network_Card can edit!!!
+  ${REDLI}Red Color${END} stand for can't edit, need to add connection to modify this device!!!
+  ${BLULI}Blue Color${END} stand for unManage Device, need to be config file service NetworkManager!!!
 ${END}
 """
 echo "#############################################"
@@ -77,9 +87,17 @@ while [[ true ]]; do
  fi
 done
 
+
+
 _checkStatus=$(nmcli d | grep $_cardName | awk '{print $3}')
 if [[ $_checkStatus == "disconnected" ]]; then
   echo -e "${GREEN}Network Card need to be add Connection!!!${END}"
+  addConNetwork $_cardName
+elif [[ $_checkStatus == "unmanaged" ]]; then
+  echo -e "${GREEN}Edit file of Service NetworkManger and Restart Service!!!${END}"
+  configNetworkFile
+  addConNetwork $_cardName
+else
   addConNetwork $_cardName
 fi
 
