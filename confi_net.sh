@@ -56,8 +56,8 @@ systemctl restart NetworkManager
 
 echo -e "${BLUE}Download and Install NMCLI${END}"
 
-#sudo apt-get update -y
-#sudo apt install network-manager -y
+sudo apt-get update -y
+sudo apt install network-manager -y
 
 _deviceConnect=$(nmcli d | grep -v DEVICE |awk '$3 == "connected"{print $1}')
 _deviceDisConnect=$(nmcli d | grep -v DEVICE |awk '$3 == "disconnected"{print $1}')
