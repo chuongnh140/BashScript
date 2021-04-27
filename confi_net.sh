@@ -125,3 +125,4 @@ while [[ true ]]; do
 done
 
 showIP $_cardName
+echo "Done"
