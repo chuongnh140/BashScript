@@ -67,8 +67,11 @@ echo -e "${BLUE}Check network_card...${END}"
 echo "#############################################"
 echo -e "${YELLOW}Network card existing: ${END}"
 echo -e "${GREEN}$_deviceConnect${END}"
+echo "---------------------------------------------"
 echo -e "${REDLI}$_deviceDisConnect${END}"
+echo "---------------------------------------------"
 echo -e "${BLULI}$_deviceUnmanage${END}"
+echo "---------------------------------------------"
 echo -e """${YELLOW}Notice:
   ${GREEN}Green Color${END} stand for network_Card can edit!!!
   ${REDLI}Red Color${END} stand for can't edit, need to add connection to modify this device!!!
