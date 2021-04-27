@@ -9,6 +9,8 @@ YELLOW="\e[33m"
 BLULI="\e[94m"
 END="\e[0m"
 
+_versionUbuntu=$(cat /etc/*os-release | grep PRETTY_NAME | sed 's/PRETTY_NAME=//')
+
 echo -e "${BLUE}Script for config network in Ubuntu with NMCLI Tools${END}"
 
 
@@ -36,7 +38,8 @@ function dhcpConfig() {
 }
 
 function showIP() {
-  nmcli con show $1 | grep ipv4 --color
+  #nmcli con show $1 | grep ipv4 --color
+  ip a 
 }
 
 function addConNetwork() {
@@ -51,6 +54,15 @@ function configNetworkFile() {
 unmanaged-devices=none
 EOF
 systemctl restart NetworkManager
+}
+
+function editNetplanFile() {
+    cat <<EOF > /etc/netplan/00-install-config.yaml
+network:
+  version: 2
+  renderer: NetworkManager
+EOF
+
 }
 
 
@@ -124,5 +136,27 @@ while [[ true ]]; do
   fi
 done
 
-showIP $_cardName
-echo "Done"
+
+echo -e -n "${GREEN}Do you want to set NetworkManager is default in $_versionUbuntu (y/n): ${END}"
+read _ans
+echo "#######################################################"
+if [[ $_ans == "y" ]]; then
+  editNetplanFile
+  
+  if [[ $? -eq 0 ]]; then
+    sudo netplan apply
+    echo -e "${YELLOW}Done edit, default network config is NetworkManager!!!${END}"
+  else
+    echo -e "${REDLI}
+    Edit FAILED!!!
+    Go to /etc/netplan and past this code:
+    network:
+      version: 2
+      renderer: NetworkManager
+    ${END}"
+  fi
+fi
+
+echo "#######################################################"
+
+showIP
