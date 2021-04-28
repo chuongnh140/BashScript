@@ -57,13 +57,21 @@ systemctl restart NetworkManager
 }
 
 function editNetplanFile() {
-    cat <<EOF > /etc/netplan/00-install-config.yaml
+  cd /etc/netplan &&
+  for file_name in *
+  do
+    mv $file_name $file_name.ori
+  done
+
+  cat <<EOF > /etc/netplan/00-install-config.yaml
 network:
   version: 2
   renderer: NetworkManager
 EOF
 
+netplan apply
 }
+
 
 
 echo -e "${BLUE}Download and Install NMCLI${END}"
@@ -112,8 +120,6 @@ elif [[ $_checkStatus == "unmanaged" ]]; then
   echo -e "${GREEN}Edit file of Service NetworkManger and Restart Service!!!${END}"
   configNetworkFile
   addConNetwork $_cardName
-else
-  addConNetwork $_cardName
 fi
 
 while [[ true ]]; do
@@ -141,10 +147,8 @@ echo -e -n "${GREEN}Do you want to set NetworkManager is default in $_versionUbu
 read _ans
 echo "#######################################################"
 if [[ $_ans == "y" ]]; then
-  editNetplanFile
-  
+  editNetplanFile  
   if [[ $? -eq 0 ]]; then
-    sudo netplan apply
     echo -e "${YELLOW}Done edit, default network config is NetworkManager!!!${END}"
   else
     echo -e "${REDLI}
