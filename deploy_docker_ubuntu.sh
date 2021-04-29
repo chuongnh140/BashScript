@@ -41,4 +41,7 @@ echo Done
 echo "#######################################"
 
 systemctl enable --now docker 
-docker run hello-world
+
+sudo usermod -aG docker $USER
+
+
