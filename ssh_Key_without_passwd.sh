@@ -6,7 +6,7 @@ _check_user_exist=`cat /etc/passwd | grep $_userName`
 if [[ $_check_user_exist != '' ]]; then
 	echo "User $_userName is exist!!!"
 else
-	useradd $_userName -s /bin/bash -d /home/$_userName
+	useradd $_userName -s $(which bash) -m -d /home/$_userName
 	echo "Done add user $_userName!!!"
 fi	
 
