@@ -44,7 +44,6 @@ function showIP() {
 
 function addConNetwork() {
   echo -e "${YELLOW}Only can add type Ethernet in this Script!!!${END}"
-  sleep 3
   nmcli con add con-name $1 ifname $1 type ethernet
 }
 
@@ -72,6 +71,27 @@ EOF
 netplan apply
 }
 
+function MethodConfigure() {  
+  while [[ true ]]; do
+    echo -e "${BLUE}Config method Manual or DHCP ?${END}"
+    echo -e """${YELLOW}
+    Type 1. Manual
+    Type 2. DHCP
+    ${END}"""
+    echo -e -n "${BLUE}Type 1 or 2: ${END}"
+    read _choise
+
+    if [[ $_choise == 1 ]]; then
+      manualConfig $_cardName
+      break
+    elif [[ $_choise == 2 ]]; then
+      dhcpConfig $_cardName
+      break
+    else
+      echo -e "${REDLI}Invalid choise!!!${END}"
+    fi
+  done
+}
 
 
 echo -e "${BLUE}Download and Install NMCLI${END}"
@@ -111,45 +131,29 @@ while [[ true ]]; do
 done
 
 
-
 _checkStatus=$(nmcli d | grep $_cardName | awk '{print $3}')
 if [[ $_checkStatus == "disconnected" ]]; then
   echo -e "${GREEN}Network Card need to be add Connection!!!${END}"
   addConNetwork $_cardName
+  MethodConfigure
 elif [[ $_checkStatus == "unmanaged" ]]; then
   echo -e "${GREEN}Edit file of Service NetworkManger and Restart Service!!!${END}"
   configNetworkFile
   addConNetwork $_cardName
+  MethodConfigure
+elif [[ $_checkStatus == "connected" ]]; then
+  MethodConfigure
 fi
 
-while [[ true ]]; do
-  echo -e "${BLUE}Config method Manual or DHCP ?${END}"
-  echo -e """${YELLOW}
-  Type 1. Manual
-  Type 2. DHCP
-  ${END}"""
-  echo -e -n "${BLUE}Type 1 or 2: ${END}"
-  read _choise
-
-  if [[ $_choise == 1 ]]; then
-    manualConfig $_cardName
-    break
-  elif [[ $_choise == 2 ]]; then
-    dhcpConfig $_cardName
-    break
-  else
-    echo -e "${REDLI}Invalid choise!!!${END}"
-  fi
-done
 
 
-echo -e -n "${GREEN}Do you want to set NetworkManager is default in $_versionUbuntu (y/n): ${END}"
+echo -e -n "${YELLOW}Do you want to set NetworkManager is default in $_versionUbuntu (y/n): ${END}"
 read _ans
 echo "#######################################################"
 if [[ $_ans == "y" ]]; then
   editNetplanFile  
   if [[ $? -eq 0 ]]; then
-    echo -e "${YELLOW}Done edit, default network config is NetworkManager!!!${END}"
+    echo -e "${GREEN}Done edit, default network config is NetworkManager!!!${END}"
   else
     echo -e "${REDLI}
     Edit FAILED!!!
